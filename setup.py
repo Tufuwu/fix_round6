@@ -1,83 +1,96 @@
-"""
-Installation script for olefile using setuptools
+#!/usr/bin/env python
+import os
+import re
+import sys
 
-To install this package, run:
-    python setup.py install
-
-"""
-
-
-# --- IMPORTS -----------------------------------------------------------------
-
-from setuptools import setup
-
-from olefile import __version__, __author__
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 
-# --- METADATA ----------------------------------------------------------------
-
-name         = "olefile"
-version      = __version__
-desc         = "Python package to parse, read and write Microsoft OLE2 files (Structured Storage or Compound Document, Microsoft Office)"
-author       = __author__
-author_email = "nospam@decalage.info"
-url          = "https://www.decalage.info/python/olefileio"
-license      = "BSD"
-download_url = "https://github.com/decalage2/olefile/tarball/master"
-
-with open('README.md') as f:
-    long_desc = f.read()
-
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: BSD License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 2",
-    "Programming Language :: Python :: 2.7",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
-    "Topic :: Software Development :: Libraries :: Python Modules"
-]
-
-# --- PACKAGES ----------------------------------------------------------------
-
-packages = [
-    "olefile",
-]
-
-
-# === MAIN ====================================================================
-
-def main():
-    setup(
-        name=name,
-        version=version,
-        description=desc,
-        long_description=long_desc,
-        long_description_content_type='text/markdown',
-        classifiers=classifiers,
-        author=author,
-        author_email=author_email,
-        url=url,
-        license=license,
-#        package_dir=package_dir,
-        packages=packages,
-        download_url=download_url,
-#        data_files=data_files,
-#        scripts=scripts,
-        python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
+def get_version(*file_paths):
+    """Retrieves the version from rest_framework_tus/__init__.py"""
+    filename = os.path.join(os.path.dirname(__file__), *file_paths)
+    version_file = open(filename).read()
+    version_match = re.search(
+        r"^__version__ = ['\"]([^'\"]*)['\"]",
+        version_file,
+        re.M,
     )
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 
-if __name__ == "__main__":
-    main()
+version = get_version("rest_framework_tus", "__init__.py")
+
+
+if sys.argv[-1] == "publish":
+    try:
+        import wheel
+
+        print("Wheel version: ", wheel.__version__)
+    except ImportError:
+        print('Wheel library missing. Please run "pip install wheel"')
+        sys.exit()
+    os.system("python setup.py sdist upload")
+    os.system("python setup.py bdist_wheel upload")
+    sys.exit()
+
+if sys.argv[-1] == "tag":
+    print("Tagging the version on git:")
+    os.system(f"git tag -a {version} -m 'version {version}'")
+    os.system("git push --tags")
+    sys.exit()
+
+readme = open("README.rst").read()
+history = open("HISTORY.rst").read().replace(".. :changelog:", "")
+
+setup(
+    name="drf-tus",
+    version=version,
+    description="A Tus (tus.io) library for Django Rest Framework",
+    long_description=f"{readme}\n\n{history}",
+    author="Dirk Moors",
+    author_email="dirkmoors@gmail.com",
+    url="https://github.com/dirkmoors/drf-tus",
+    packages=[
+        "rest_framework_tus",
+    ],
+    include_package_data=True,
+    install_requires=[
+        "python-dateutil>=2.8.2",
+        "Django>=3.2,<=4.2",
+        "djangorestframework>=3.14.0",
+        "jsonfield>=2.0.0",
+        "django-fsm==2.8.1",
+        "six>=1.11.0",
+    ],
+    license="MIT",
+    zip_safe=False,
+    keywords=[
+        "drf-tus",
+        "tus",
+        "django",
+        "rest",
+        "framework",
+        "django-rest-framework",
+    ],
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Framework :: Django",
+        "Framework :: Django :: 3.2",
+        "Framework :: Django :: 4.0",
+        "Framework :: Django :: 4.1",
+        "Framework :: Django :: 4.2",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+    ],
+)

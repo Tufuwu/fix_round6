@@ -1,3 +1,4 @@
+# Created by .ignore support plugin (hsz.mobi)
 ### Python template
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -21,6 +22,7 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -54,8 +56,9 @@ coverage.xml
 *.log
 local_settings.py
 
-# Flask instance folder
+# Flask stuff:
 instance/
+.webassets-cache
 
 # Scrapy stuff:
 .scrapy
@@ -66,7 +69,7 @@ docs/_build/
 # PyBuilder
 target/
 
-# IPython Notebook
+# Jupyter Notebook
 .ipynb_checkpoints
 
 # pyenv
@@ -79,6 +82,7 @@ celerybeat-schedule
 .env
 
 # virtualenv
+.venv
 venv/
 ENV/
 
@@ -87,20 +91,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
-### Mercurial template
-.hg/
-.hgignore
-.hgsigs
-.hgsub
-.hgsubstate
-.hgtags
-### Example user template template
-### Example user template
 
-# IntelliJ project files
-.idea
-*.iml
-out
-gen
-# Created by .ignore support plugin (hsz.mobi)
-/temp_tests/
+.idea/
+
+tests/uploaded/

@@ -1,26 +1,21 @@
-# Top-most EditorConfig file
 root = true
 
 [*]
-# Unix-style newlines with a newline ending every file
+charset = utf-8
 end_of_line = lf
 insert_final_newline = true
-charset = utf-8
-
-# Four-space indentation
-indent_size = 4
-indent_style = space
-
 trim_trailing_whitespace = true
 
-[*.bat]
-end_of_line = crlf
-
-[*.yml]
-# Two-space indentation
-indent_size = 2
+[*.{py,rst,ini}]
 indent_style = space
+indent_size = 4
 
-# Tab indentation (no size specified)
+[*.{html,css,scss,json,yml}]
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
 [Makefile]
 indent_style = tab
